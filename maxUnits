@@ -1,0 +1,32 @@
+#This function will return the maximum number of units that can be loaded onto a given truck with the following parameters: units are organized as so: number of boxes, units per box
+#Additionally, each truck can only contain a certain number of total boxes
+
+class Solution:
+    def maximumUnits(self, boxTypes: List[List[int]], truckSize: int) -> int:
+        
+        #The first thing to do is organize all the boxes according to how many units there are per box. Because we want to maximize the number of units, we want the most units
+        #per box to be the thing to sort by and we will eventually iterate down from there.
+        def sortSecond(sublist):
+            sublist.sort(key = lambda x:x[1])
+            return sublist
+        
+        #Since the above function sorted by ascending order, we want to reverse the array so that it descends instead. I could have put this in the subfunction but I put
+        #it out here instead.
+        boxTypes = sortSecond(boxTypes)
+        boxTypes.reverse()
+        
+        load, index = 0,0
+        
+        #Here we simply get the largest units per box and add those to the truck until there are no more spots left on the truck. Since we have already organized the boxes,
+        #This is a pretty trivial task as we merely select from the front until the truck is full.
+        while truckSize > 0 and index < len(boxTypes):
+            if boxTypes[index][0] <= truckSize:
+                load += boxTypes[index][1] * boxTypes[index][0]
+                truckSize -= boxTypes[index][0]
+                index += 1
+            elif boxTypes[index][0] > truckSize:
+                while truckSize > 0:
+                    load += boxTypes[index][1]
+                    truckSize -= 1
+        
+        return load
